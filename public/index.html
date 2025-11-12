@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente AJAX para Node.js</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #resultado {
+            margin-top: 20px;
+        }
+        #resultado ul {
+            list-style: none;
+            padding: 0;
+        }
+        #resultado li {
+            background: #f9f9f9;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista de Productos</h1>
+    <button onclick="obtenerProductos()">Cargar Productos</button>
+    <div id="resultado"></div>
+
+
+    <script>
+        function obtenerProductos() {
+            const resultadoDiv = document.getElementById('resultado');
+            resultadoDiv.innerHTML = '<p>Cargando...</p>';
+
+
+            fetch('http://localhost:3000/productos')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la solicitud: ' + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let html = '<ul>';
+                    data.forEach(producto => {
+                        html += `<li><strong>${producto.nombre}</strong> - $${producto.precio}</li>`;
+                    });
+                    html += '</ul>';
+                    resultadoDiv.innerHTML = html;
+                })
+                .catch(error => {
+                    resultadoDiv.innerHTML = `<p class="error">Error: ${error.message}</p>`;
+                });
+        }
+    </script>
+</body>
+</html>
